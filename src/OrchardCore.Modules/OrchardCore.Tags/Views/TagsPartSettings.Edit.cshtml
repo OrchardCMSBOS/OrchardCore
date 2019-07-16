@@ -1,0 +1,18 @@
+@model OrchardCore.Tags.ViewModels.TagsPartSettingsViewModel
+
+<script asp-name="codemirror" depends-on="admin" at="Foot"></script>
+<script asp-name="codemirror-mode-javascript" at="Foot"></script>
+<script asp-name="codemirror-addon-display-autorefresh" at="Foot"></script>
+<script asp-name="codemirror-addon-mode-simple" at="Foot"></script>
+<script asp-name="codemirror-addon-mode-multiplex" at="Foot"></script>
+<script asp-name="codemirror-mode-xml" at="Foot"></script>
+
+<script asp-src="~/OrchardCore.Liquid/codemirror/liquid.js" at="Foot"></script>
+
+<div class="form-group">
+    <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" asp-for="AllowMultiple" checked="@Model.AllowMultiple">
+        <label class="custom-control-label" asp-for="AllowMultiple">@T["Allow multiple tags"]</label>
+        <span class="hint">@T["Check to allow users to assign multiple tgs to a content item."]</span>
+    </div>
+</div>

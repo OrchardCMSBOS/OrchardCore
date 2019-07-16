@@ -1,0 +1,23 @@
+@using OrchardCore.Tags.ViewModels;
+@model TagsPartViewModel
+@inject IAuthorizationService AuthorizationService
+@inject OrchardCore.Settings.ISiteService SiteService
+@{
+    var site = await SiteService.GetSiteSettingsAsync();
+}
+
+<div class="form-group" asp-validation-class-for="Tags">
+    <label asp-for="Tags">@T["Tags"]</label>
+    <div class="input-group">
+        <input asp-for="Tags" class="form-control"/>
+        <span asp-validation-for="Tags"></span>
+    </div>
+    @if (Model.Settings.AllowMultiple)
+    {
+        <span class="hint">@T["Add multiple tags."]</span>
+    }
+    else
+    {
+        <span class="hint">@T["Add a tag."]</span>
+    }
+</div>

@@ -1,0 +1,8 @@
+@model OrchardCore.Tags.ViewModels.TagsSettingsViewModel
+
+<fieldset class="form-group" asp-validation-class-for="Tags">
+    <label asp-for="Tags">@T["All Tags in the system"]</label>
+    <input asp-for="Tags" class="form-control" />
+    <span asp-validation-for="Tags"></span>
+    <span class="hint">@T["Global tags."]</span>
+</fieldset>
