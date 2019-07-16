@@ -11,25 +11,6 @@ using YesSql;
 public static class TagsOrchardHelperExtensions
 {
     /// <summary>
-    /// Returns a the term from its content item id and taxonomy.
-    /// </summary>
-    /// <param name="taxonomyContentItemId">The taxonomy content item id.</param>
-    /// <param name="termContentItemId">The term content item id.</param>
-    /// <returns>A content item id <c>null</c> if it was not found.</returns>
-    public static async Task<ContentItem> GetTagsAsync(this IOrchardHelper orchardHelper, string taxonomyContentItemId, string termContentItemId)
-    {
-        var contentManager = orchardHelper.HttpContext.RequestServices.GetService<IContentManager>();
-        var taxonomy = await contentManager.GetAsync(taxonomyContentItemId);
-
-        if (taxonomy == null)
-        {
-            return null;
-        }
-
-        return FindTerm(taxonomy.Content.TaxonomyPart.Terms as JArray, termContentItemId);
-    }
-
-    /// <summary>
     /// Query content items.
     /// </summary>
     public static async Task<IEnumerable<ContentItem>> QueryTaggedContentItemsAsync(this IOrchardHelper orchardHelper, Func<IQuery<ContentItem, TagsPartIndex>, IQuery<ContentItem>> query)
@@ -41,59 +22,4 @@ public static class TagsOrchardHelperExtensions
 
         return await contentManager.LoadAsync(contentItems);
     }
-
-    internal static ContentItem FindTerm(JArray termsArray, string termContentItemId)
-    {
-        foreach(JObject term in termsArray)
-        {
-            var contentItemId = term.GetValue("ContentItemId").ToString();
-
-            if (contentItemId == termContentItemId)
-            {
-                return term.ToObject<ContentItem>();
-            }
-
-            if (term.GetValue("Terms") is JArray children)
-            {
-                var found = FindTerm(children, termContentItemId);
-
-                if (found != null)
-                {
-                    return found;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    internal static bool FindTermHierarchy(JArray termsArray, string termContentItemId, List<ContentItem> terms)
-    {
-        foreach (JObject term in termsArray)
-        {
-            var contentItemId = term.GetValue("ContentItemId").ToString();
-
-            if (contentItemId == termContentItemId)
-            {
-                terms.Add(term.ToObject<ContentItem>());
-
-                return true;
-            }
-
-            if (term.GetValue("Terms") is JArray children)
-            {
-                var found = FindTermHierarchy(children, termContentItemId, terms);
-
-                if (found)
-                {
-                    terms.Add(term.ToObject<ContentItem>());
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
 }

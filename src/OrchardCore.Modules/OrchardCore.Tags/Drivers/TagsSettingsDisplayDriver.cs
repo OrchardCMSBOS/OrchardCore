@@ -21,12 +21,22 @@ namespace OrchardCore.Tags.Drivers
 
         public override async Task<IDisplayResult> UpdateAsync(TagsSettings section, BuildEditorContext context)
         {
-
             if (context.GroupId == GroupId)
             {
                 await context.Updater.TryUpdateModelAsync(section, Prefix);
             }
             return await EditAsync(section, context);
+        }
+
+        public override IDisplayResult Display(TagsSettings section, BuildDisplayContext context)
+        {
+            return Initialize<TagsSettingsViewModel>("TagsSettings", model =>
+            {
+                model.Tags = string.Join(", ", section.Tags);
+            })
+            .Location("Content")
+            .Location("SummaryAdmin", "");
+            ;
         }
     }
 }

@@ -6,6 +6,10 @@ namespace OrchardCore.Tags.Models
 {
     public class TagsPart : ContentPart
     {
-        public string[] Tags { get; set; } = Array.Empty<string>();
+        public IEnumerable<string> Tags { get; set; } = Array.Empty<string>();
+        private IEnumerable<string> ParseTags(string tags)
+        {
+            return (tags ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        }
     }
 }

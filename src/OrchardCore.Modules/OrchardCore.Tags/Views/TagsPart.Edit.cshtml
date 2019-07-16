@@ -1,9 +1,13 @@
 @using OrchardCore.Tags.ViewModels;
 @model TagsPartViewModel
 @inject IAuthorizationService AuthorizationService
-@inject OrchardCore.Settings.ISiteService SiteService
+@inject OrchardCore.Settings.ISiteService _site
+@using OrchardCore.Tags.Models;
+@using OrchardCore.Entities;
+
 @{
-    var site = await SiteService.GetSiteSettingsAsync();
+    //for auto-complete
+    var tags = (await _site.GetSiteSettingsAsync()).As<TagsSettings>().Tags;
 }
 
 <div class="form-group" asp-validation-class-for="Tags">
