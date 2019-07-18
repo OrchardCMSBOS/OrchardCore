@@ -17,6 +17,14 @@ var tags = (await _site.GetSiteSettingsAsync()).As<TagsSettings>().Tags;
 
 Provides a way to query content items that are tagged with specific tags.
 
+### QueryTaggedContentItemsByTagsAsync
+
+Provides a way to query items that are tagged with specific tags.
+
+### QueryAllTagsAsync
+
+Provides a way to return all tags being used in the system.
+
 ## Liquid Tags
 
 ### tags
@@ -29,7 +37,7 @@ The following example lists all the tags assigned for the BlogPost
 content type, then renders them.
 
 ```liquid
-{% assign tag = Model.ContentItem.Content.BlogPost.Tags | tags %}
+{% assign tag = Model.ContentItem.Content.BlogPost.TagsPart.Tags | tags %}
 {% for t in tag %}
   {{ t }}
 {% endfor %}

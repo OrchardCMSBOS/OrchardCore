@@ -6,14 +6,14 @@
 @using OrchardCore.Entities;
 
 @{
-    //for auto-complete
+    //for auto-complete, get's all tags in the system
     var tags = (await _site.GetSiteSettingsAsync()).As<TagsSettings>().Tags;
 }
 
-<div class="form-group" asp-validation-class-for="Tags">
-    <label asp-for="Tags">@T["Tags"]</label>
+<div class="form-group">
+        <label asp-for="Tags">@T["All Tags in the system"]</label>
     <div class="input-group">
-        <input asp-for="Tags" class="form-control"/>
+        <input asp-for="Tags" class="form-control" />
         <span asp-validation-for="Tags"></span>
     </div>
     @if (Model.Settings.AllowMultiple)

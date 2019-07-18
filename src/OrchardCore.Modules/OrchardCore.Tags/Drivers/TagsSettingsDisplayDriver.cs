@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using OrchardCore.DisplayManagement.Entities;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.Views;
@@ -15,7 +17,7 @@ namespace OrchardCore.Tags.Drivers
         public override IDisplayResult Edit(TagsSettings section)
         {
             return Initialize<TagsSettingsViewModel>("TagsSettings_Edit", model => {
-                model.Tags = section.Tags == null ? string.Empty : string.Join(", ", section.Tags);
+                model.Tags = section.Tags;
             }).Location("Content:5").OnGroup(GroupId);
         }
 
@@ -23,7 +25,12 @@ namespace OrchardCore.Tags.Drivers
         {
             if (context.GroupId == GroupId)
             {
-                await context.Updater.TryUpdateModelAsync(section, Prefix);
+                var viewModel = new TagsSettingsViewModel();
+                viewModel.Tags = section.Tags;
+
+                await context.Updater.TryUpdateModelAsync(viewModel, Prefix, t => t.Tags);
+
+                section.Tags = viewModel.Tags;
             }
             return await EditAsync(section, context);
         }
@@ -32,7 +39,7 @@ namespace OrchardCore.Tags.Drivers
         {
             return Initialize<TagsSettingsViewModel>("TagsSettings", model =>
             {
-                model.Tags = string.Join(", ", section.Tags);
+                model.Tags = section.Tags;
             })
             .Location("Content")
             .Location("SummaryAdmin", "");

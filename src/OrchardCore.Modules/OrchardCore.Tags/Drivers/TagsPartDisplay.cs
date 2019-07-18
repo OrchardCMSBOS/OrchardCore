@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
+using Newtonsoft.Json;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Records;
@@ -48,7 +50,7 @@ namespace OrchardCore.Tags.Drivers
             return Initialize<TagsPartViewModel>("TagsPart_Edit", async model =>
             {
 
-                model.Tags = String.Join(", ", tagsPart.Tags.ToArray());
+                model.Tags = tagsPart.Tags;
                 model.TagsPart = tagsPart;
 
                 var siteSettings = await _siteService.GetSiteSettingsAsync();
@@ -67,14 +69,11 @@ namespace OrchardCore.Tags.Drivers
         public override async Task<IDisplayResult> UpdateAsync(TagsPart model, IUpdateModel updater)
         {
             var viewModel = new TagsPartViewModel();
+            viewModel.Tags = model.Tags;
 
             await updater.TryUpdateModelAsync(viewModel, Prefix, t => t.Tags);
 
             var settings = GetSettings(model);
-
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            model.Tags = viewModel.Tags.Split(new char[] { ',' });
 
             await updater.TryUpdateModelAsync(model, Prefix, t => t.Tags);
 

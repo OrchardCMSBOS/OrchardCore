@@ -1,13 +1,6 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Fluid;
 using OrchardCore.Tags.Models;
-using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.ContentManagement.Metadata;
-using OrchardCore.ContentManagement.Records;
-using OrchardCore.ContentManagement.Routing;
 using OrchardCore.Environment.Cache;
 using OrchardCore.Liquid;
 using OrchardCore.Settings;
@@ -17,7 +10,6 @@ namespace OrchardCore.Tags.Handlers
 {
     public class TagsPartHandler : ContentPartHandler<TagsPart>
     {
-        private readonly IAutorouteEntries _entries;
         private readonly ILiquidTemplateManager _liquidTemplateManager;
         private readonly IContentDefinitionManager _contentDefinitionManager;
         private readonly ISiteService _siteService;
@@ -25,7 +17,6 @@ namespace OrchardCore.Tags.Handlers
         private readonly YesSql.ISession _session;
 
         public TagsPartHandler(
-            IAutorouteEntries entries,
             ILiquidTemplateManager liquidTemplateManager,
             IContentDefinitionManager contentDefinitionManager,
             ISiteService siteService,
@@ -33,7 +24,6 @@ namespace OrchardCore.Tags.Handlers
             YesSql.ISession session)
         {
             _contentDefinitionManager = contentDefinitionManager;
-            _entries = entries;
             _liquidTemplateManager = liquidTemplateManager;
             _siteService = siteService;
             _tagCache = tagCache;
