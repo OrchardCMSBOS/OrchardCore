@@ -5,6 +5,10 @@ using OrchardCore.Environment.Cache;
 using OrchardCore.Liquid;
 using OrchardCore.Settings;
 using YesSql;
+using System.Threading.Tasks;
+using OrchardCore.Entities;
+using OrchardCore.Tags.ViewModels;
+using Newtonsoft.Json.Linq;
 
 namespace OrchardCore.Tags.Handlers
 {
@@ -30,12 +34,29 @@ namespace OrchardCore.Tags.Handlers
             _session = session;
         }
 
-        /*
+        
         public override async Task PublishedAsync(PublishContentContext context, TagsPart part)
         {
-            return Task.CompletedTask;
+            //synchronize tags to the global list
+            var site = await _siteService.GetSiteSettingsAsync();
+            var globalTags = site.As<TagsSettings>();
+
+            var vm = new TagsPartViewModel();
+            vm.Tags = part.Tags;
+
+            foreach (string tag in vm.TagsCollection)
+            {
+                if(!globalTags.Tags.ToLower().Contains(tag.ToLower()))
+                {
+                    globalTags.Tags += "," + tag;
+                    site.Properties["TagsSettings"] = JObject.FromObject(globalTags);
+                }
+            }
+            
+            await _siteService.UpdateSiteSettingsAsync(site);
         }
 
+        /*
         public override Task UnpublishedAsync(PublishContentContext context, TagsPart part)
         {
 
@@ -48,11 +69,14 @@ namespace OrchardCore.Tags.Handlers
 
             return Task.CompletedTask;
         }
+        */
 
         public override async Task UpdatedAsync(UpdateContentContext context, TagsPart part)
         {
-            return Task.CompletedTask;
+            var site = await _siteService.GetSiteSettingsAsync();
+
+            await _siteService.UpdateSiteSettingsAsync(site);
         }
-        */
+        
     }
 }
