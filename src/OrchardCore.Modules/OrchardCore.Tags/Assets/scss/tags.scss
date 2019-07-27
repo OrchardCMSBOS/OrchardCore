@@ -1,0 +1,14 @@
+.tags-default {
+    .tags-default__list {
+        tags-default__list-item {
+        }
+    }
+}
+
+.tags-default .multiselect--active {
+    z-index: 1000; // bootstrap's default for dropdowns
+}
+
+[v-cloak] {
+    display: none;
+}

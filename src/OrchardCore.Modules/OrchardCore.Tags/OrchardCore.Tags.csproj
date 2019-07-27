@@ -26,4 +26,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Scripts\" />
+    <Folder Include="wwwroot\Styles\" />
+  </ItemGroup>
+
 </Project>

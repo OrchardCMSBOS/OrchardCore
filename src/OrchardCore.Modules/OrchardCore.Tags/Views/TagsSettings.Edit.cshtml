@@ -1,13 +1,42 @@
-@model OrchardCore.Tags.ViewModels.TagsSettingsViewModel
+@model TagsSettingsViewModel
 
-@{ 
+@inject IAuthorizationService AuthorizationService
+@inject OrchardCore.Settings.ISiteService _site
 
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@using OrchardCore.Tags.ViewModels;
 
+@{
+    var globalTags = Html.Raw(JsonConvert.SerializeObject(Model.TagsCollection, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+
+    var partName = "TagsSettings";
+    var vueElementId = $"Tags_{partName}_{Guid.NewGuid().ToString("n")}";
 }
 
-<fieldset class="form-group">
+<script asp-src="~/OrchardCore.Tags/Scripts/tags.js" asp-name="tags" at="Foot" depends-on="vuejs, vuemultiselect"></script>
+<style asp-src="~/OrchardCore.Tags/Styles/tags.min.css" debug-src="~/OrchardCore.Tags/Styles/tags.css"></style>
+<script asp-src="https://vuejs.org/js/vue.min.js" debug-src="https://vuejs.org/js/vue.js" asp-name="vuejs" at="Foot"></script>
+<script asp-src="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.js" asp-name="vuemultiselect" at="Foot"></script>
+<style asp-src="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css"></style>
+
+<div class="form-group">
     <label asp-for="Tags">@T["All Tags in the system"]</label>
-    <input asp-for="Tags" class="form-control" />
-    <span asp-validation-for="Tags"></span>
+    <div id="@vueElementId" class="tags-default" data-part="@partName">
+
+    <fieldset class="form-group">
+        <div class="w-xl-50">
+            <input asp-for="Tags" type="hidden" v-model="selectedIds" />
+               <vue-multiselect v-model="arrayOfItems" tag-placeholder="Global system tags" placeholder="Search or add a tag" 
+                         :options="options" :multiple="true"
+                         :taggable="true" @@tag="addTag"><vue-multiselect>
+        </div>
+    </fieldset>
+
+    </div>
     <span class="hint">@T["Global tags."]</span>
-</fieldset>
+</div>
+
+<script at="Foot">
+    tagsArray.push(initializeTagsEditor('@vueElementId', @globalTags, @globalTags, true));
+</script>

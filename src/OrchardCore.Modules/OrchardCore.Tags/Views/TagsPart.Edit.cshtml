@@ -1,21 +1,44 @@
-@using OrchardCore.Tags.ViewModels;
 @model TagsPartViewModel
+
 @inject IAuthorizationService AuthorizationService
 @inject OrchardCore.Settings.ISiteService _site
+
 @using OrchardCore.Tags.Models;
 @using OrchardCore.Entities;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@using OrchardCore.Tags.ViewModels;
 
 @{
-    //for auto-complete, get's all tags in the system
-    var tags = (await _site.GetSiteSettingsAsync()).As<TagsSettings>().Tags;
+    var selectedItems = Html.Raw(JsonConvert.SerializeObject(Model.TagsCollection, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+    var globalTags = Html.Raw(JsonConvert.SerializeObject(Model.GlobalTagsCollection, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+
+    var partName = "TagsPart";
+    var contentId = Model.TagsPart.ContentItem.ContentItemId; 
+    var vueElementId = $"Tags_{partName}_{contentId}_{Guid.NewGuid().ToString("n")}";
+
 }
 
+<script asp-src="~/OrchardCore.Tags/Scripts/tags.js" asp-name="tags" at="Foot" depends-on="vuejs, vuemultiselect"></script>
+<style asp-src="~/OrchardCore.Tags/Styles/tags.min.css" debug-src="~/OrchardCore.Tags/Styles/tags.css"></style>
+<script asp-src="https://vuejs.org/js/vue.min.js" debug-src="https://vuejs.org/js/vue.js" asp-name="vuejs" at="Foot"></script>
+<script asp-src="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.js" asp-name="vuemultiselect" at="Foot"></script>
+<style asp-src="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css"></style>
+
 <div class="form-group">
-        <label asp-for="Tags">@T["All Tags in the system"]</label>
-    <div class="input-group">
-        <input asp-for="Tags" class="form-control" />
-        <span asp-validation-for="Tags"></span>
-    </div>
+    <label asp-for="Tags">@T["Add a tag to your content item."]</label>
+    <div id="@vueElementId" class="tags-default" data-part="@partName" data-field="@contentId">
+
+    <fieldset class="form-group">
+        <div class="w-xl-50">
+            <input asp-for="Tags" type="hidden" v-model="selectedIds" />
+               <vue-multiselect v-model="arrayOfItems" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" 
+                         :options="options" :multiple="@Model.Settings.AllowMultiple.ToString().ToLowerInvariant()"
+                         :taggable="true" @@tag="addTag"><vue-multiselect>
+        </div>
+    </fieldset>
+
+</div>
     @if (Model.Settings.AllowMultiple)
     {
         <span class="hint">@T["Add multiple tags."]</span>
@@ -25,3 +48,7 @@
         <span class="hint">@T["Add a tag."]</span>
     }
 </div>
+
+<script at="Foot">
+    tagsArray.push(initializeTagsEditor('@vueElementId', @selectedItems, @globalTags, @Model.Settings.AllowMultiple.ToString().ToLowerInvariant()));
+</script>

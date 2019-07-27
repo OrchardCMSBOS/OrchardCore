@@ -1,3 +1,15 @@
 [
- 
+  {
+    "generateSourceMaps": false,
+    "inputs": [
+      "Assets/scss/tags.scss"
+    ],
+    "output": "wwwroot/Styles/tags.css"
+  },
+  {
+    "inputs": [
+      "Assets/js/tags/*.js"
+    ],
+    "output": "wwwroot/Scripts/tags.js"
+  }
 ]

@@ -11,6 +11,7 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Records;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Entities;
 using OrchardCore.Mvc.ModelBinding;
 using OrchardCore.Settings;
 using OrchardCore.Tags.Models;
@@ -49,12 +50,13 @@ namespace OrchardCore.Tags.Drivers
         {
             return Initialize<TagsPartViewModel>("TagsPart_Edit", async model =>
             {
+                var siteSettings = await _siteService.GetSiteSettingsAsync();
+                var globalTags = siteSettings.As<TagsSettings>().Tags;
 
                 model.Tags = tagsPart.Tags;
                 model.TagsPart = tagsPart;
+                model.GlobalTags = globalTags;
 
-                var siteSettings = await _siteService.GetSiteSettingsAsync();
- 
                 model.Settings = GetSettings(tagsPart);
             });
         }
